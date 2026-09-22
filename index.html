@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SaskFirearmsExchange — Prototype</title>
+<style>
+:root{--green:#124c40;--green2:#0c382f;--ink:#172522;--muted:#687772;--line:#dce5e1;--paper:#f5f8f6;--white:#fff;--accent:#e7efe9}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--paper)}
+a{color:inherit;text-decoration:none}.wrap{max-width:1180px;margin:auto;padding:0 22px}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:3}
+.nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:20px;color:var(--green)}
+.logo{display:grid;place-items:center;background:var(--green);color:#fff;width:40px;height:40px;border-radius:10px;font-size:22px}
+.brand small{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-top:3px}
+nav{display:flex;align-items:center;gap:22px;font-size:14px}nav a:last-child{background:var(--green);color:#fff;padding:11px 16px;border-radius:8px}
+.hero{background:linear-gradient(115deg,#103e35,#1e6656);color:white;padding:56px 0 46px}
+.hero h1{font-size:clamp(30px,4vw,46px);margin:0 0 12px;letter-spacing:-1px}
+.hero p{color:#e0eee8;margin:0 0 28px;line-height:1.5}
+.search{display:grid;grid-template-columns:1fr 190px 140px;gap:10px;background:#fff;padding:10px;border-radius:12px;box-shadow:0 12px 32px #092d2733}
+input,select{width:100%;padding:14px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+button{border:0;border-radius:8px;background:var(--green);color:#fff;padding:13px 18px;font:700 14px Arial;cursor:pointer}
+button:hover{background:var(--green2)}
+.notice{font-size:12px;color:#d6e9e1;margin-top:14px}
+main{padding:30px 0 60px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:0 0 16px}
+h2{font-size:23px;margin:0}.sub{color:var(--muted);font-size:14px;margin-top:6px}
+.categories{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:18px 0 34px}
+.cat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 10px;text-align:center;font-size:13px;font-weight:700;cursor:pointer}
+.cat span{display:block;font-size:25px;margin-bottom:9px;color:var(--green)}
+.cat:hover{border-color:var(--green);background:var(--accent)}
+.filters{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#fff;padding:8px 12px;border-radius:999px;color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.listing{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.listing:hover{transform:translateY(-3px);box-shadow:0 10px 24px #193b2c12}
+.photo{height:160px;display:grid;place-items:center;background:linear-gradient(135deg,#e6e9e4,#d5ddd6);color:#73817a;font-size:13px;position:relative}
+.photo:before{content:"DEMO IMAGE";letter-spacing:2px;font-size:11px;border:1px dashed #9ca9a1;padding:10px 13px;border-radius:6px}
+.tag{position:absolute;top:10px;left:10px;background:#fff;color:var(--green);padding:5px 8px;border-radius:6px;font-size:10px;font-weight:800}
+.details{padding:14px}.details h3{font-size:16px;margin:0 0 9px}.price{font-size:21px;font-weight:800;color:var(--green);margin-bottom:9px}
+.meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.empty{display:none;background:#fff;border:1px dashed var(--line);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
+footer{background:#103e35;color:#eaf3ef;padding:28px 0}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:13px}.foot small{color:#bdd2c9}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.categories{grid-template-columns:repeat(3,1fr)}.search{grid-template-columns:1fr 1fr}.search button{grid-column:1/-1}}
+@media(max-width:560px){.wrap{padding:0 14px}.nav{height:auto;padding:14px 0;align-items:flex-start}.brand{font-size:16px}nav{gap:10px;font-size:12px;flex-wrap:wrap;justify-content:flex-end}nav a:last-child{padding:9px}.hero{padding:38px 0}.search{grid-template-columns:1fr}.search button{grid-column:auto}.grid{gap:10px}.photo{height:125px}.details{padding:11px}.details h3{font-size:14px}.price{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+<a class="brand" href="#"><span class="logo">✦</span><span>SaskFirearmsExchange<small>Saskatchewan classifieds concept</small></span></a>
+<nav><a href="#browse">Browse</a><a href="#how">How it works</a><a href="#signin">Sign in</a><a href="#register">Register</a></nav>
+</div></header>
+<section class="hero"><div class="wrap">
+<h1>Saskatchewan’s local<br>classifieds concept</h1>
+<p>A simple place to explore local listings by region.<br><strong>Prototype only — no transactions or real listings.</strong></p>
+<div class="search">
+<input id="query" placeholder="Search demo listings…" aria-label="Search demo listings">
+<select id="region" aria-label="Choose region"><option value="">All Saskatchewan regions</option><option>Regina</option><option>Saskatoon</option><option>Prince Albert</option><option>Moose Jaw</option><option>North</option><option>South</option></select>
+<button id="searchBtn">Search demo</button>
+</div>
+<div class="notice">Illustrative layout • Fictional entries • Not a live marketplace</div>
+</div></section>
+<main class="wrap" id="browse">
+<div class="section-head"><div><h2>Browse categories</h2><div class="sub">A quick way to explore the concept</div></div></div>
+<div class="categories">
+<div class="cat" data-filter="Rifles"><span>⌁</span>Rifles</div>
+<div class="cat" data-filter="Shotguns"><span>⌁</span>Shotguns</div>
+<div class="cat" data-filter="Handguns"><span>◉</span>Handguns</div>
+<div class="cat" data-filter="Accessories"><span>◇</span>Accessories</div>
+<div class="cat" data-filter="Optics"><span>◎</span>Optics</div>
+<div class="cat" data-filter="Other"><span>＋</span>Other</div>
+</div>
+<div class="section-head"><div><h2>Example listing cards</h2><div class="sub" id="count">4 fictional sample cards</div></div><div class="filters"><span class="chip">Prototype</span><span class="chip">Saskatchewan</span></div></div>
+<div class="grid" id="cards">
+<article class="listing" data-name="prairie field rifle" data-region="Regina" data-category="Rifles"><div class="photo"><span class="tag">SAMPLE</span></div><div class="details"><h3>Prairie Field Rifle — Example</h3><div class="price">$—</div><div class="meta"><span>Regina, SK</span><span>Demo</span></div></div></article>
+<article class="listing" data-name="northland sporting shotgun" data-region="Saskatoon" data-category="Shotguns"><div class="photo"><span class="tag">SAMPLE</span></div><div class="details"><h3>Northland Sporting Shotgun — Example</h3><div class="price">$—</div><div class="meta"><span>Saskatoon, SK</span><span>Demo</span></div></div></article>
+<article class="listing" data-name="prairie optics accessory" data-region="Moose Jaw" data-category="Optics"><div class="photo"><span class="tag">SAMPLE</span></div><div class="details"><h3>Prairie Optics Accessory — Example</h3><div class="price">$—</div><div class="meta"><span>Moose Jaw, SK</span><span>Demo</span></div></div></article>
+<article class="listing" data-name="saskatchewan outdoor gear" data-region="Prince Albert" data-category="Accessories"><div class="photo"><span class="tag">SAMPLE</span></div><div class="details"><h3>Saskatchewan Outdoor Gear — Example</h3><div class="price">$—</div><div class="meta"><span>Prince Albert, SK</span><span>Demo</span></div></div></article>
+</div>
+<div class="empty" id="empty">No demo cards match. Try a different search or region.</div>
+<section id="how" style="margin-top:42px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px">
+<h2>What comes next?</h2><p class="sub">This is a static visual prototype. Next we can choose a free hosting route, then learn how to add real functionality safely and responsibly.</p>
+<div class="filters"><span class="chip">1. Refine the design</span><span class="chip">2. Learn basic HTML/CSS</span><span class="chip">3. Review legal & platform rules</span><span class="chip">4. Plan accounts and moderation</span></div>
+</section>
+</main>
+<footer><div class="wrap foot"><div><strong>SaskFirearmsExchange</strong><br><small>Saskatchewan classifieds concept</small></div><div id="signin">Prototype only — no accounts, messages, payments, or live listings.</div></div></footer>
+<script>
+const cards=[...document.querySelectorAll('.listing')], query=document.getElementById('query'), region=document.getElementById('region'), empty=document.getElementById('empty'), count=document.getElementById('count');
+let category='';
+function filterCards(){const q=query.value.trim().toLowerCase(), r=region.value;let shown=0;cards.forEach(card=>{const ok=(!q||card.dataset.name.includes(q))&&(!r||card.dataset.region===r)&&(!category||card.dataset.category===category);card.style.display=ok?'':'none';if(ok)shown++;});empty.style.display=shown?'none':'block';count.textContent=shown+' fictional sample card'+(shown===1?'':'s')+' shown';}
+document.getElementById('searchBtn').addEventListener('click',filterCards);
+query.addEventListener('keydown',e=>{if(e.key==='Enter')filterCards()});
+region.addEventListener('change',filterCards);
+document.querySelectorAll('.cat').forEach(cat=>cat.addEventListener('click',()=>{category=category===cat.dataset.filter?'':cat.dataset.filter;filterCards();document.querySelectorAll('.cat').forEach(c=>c.style.outline=c.dataset.filter===category?'2px solid #124c40':'none');}));
+</script>
+</body></html>
