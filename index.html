@@ -82,13 +82,54 @@ footer{background:#103e35;color:#eaf3ef;padding:28px 0}.foot{display:flex;justif
 </section>
 </main>
 <footer><div class="wrap foot"><div><strong>SaskFirearmsExchange</strong><br><small>Saskatchewan classifieds concept</small></div><div id="signin">Prototype only — no accounts, messages, payments, or live listings.</div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = 'https://tavlixkwaenuvmbqxosg.supabase.co';
+const SUPABASE_KEY = 'PASTE_YOUR_PUBLISHABLE_KEY_HERE';
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
 const cards=[...document.querySelectorAll('.listing')], query=document.getElementById('query'), region=document.getElementById('region'), empty=document.getElementById('empty'), count=document.getElementById('count');
+
 let category='';
-function filterCards(){const q=query.value.trim().toLowerCase(), r=region.value;let shown=0;cards.forEach(card=>{const ok=(!q||card.dataset.name.includes(q))&&(!r||card.dataset.region===r)&&(!category||card.dataset.category===category);card.style.display=ok?'':'none';if(ok)shown++;});empty.style.display=shown?'none':'block';count.textContent=shown+' fictional sample card'+(shown===1?'':'s')+' shown';}
+
+function filterCards(){
+  const q=query.value.trim().toLowerCase(), r=region.value;
+  let shown=0;
+
+  cards.forEach(card=>{
+    const ok=(!q||card.dataset.name.includes(q))&&
+      (!r||card.dataset.region===r)&&
+      (!category||card.dataset.category===category);
+
+    card.style.display=ok?'':'none';
+    if(ok)shown++;
+  });
+
+  empty.style.display=shown?'none':'block';
+  count.textContent=shown+' fictional sample card'+(shown===1?'':'s')+' shown';
+}
+
 document.getElementById('searchBtn').addEventListener('click',filterCards);
-query.addEventListener('keydown',e=>{if(e.key==='Enter')filterCards()});
+
+query.addEventListener('keydown',e=>{
+  if(e.key==='Enter')filterCards();
+});
+
 region.addEventListener('change',filterCards);
-document.querySelectorAll('.cat').forEach(cat=>cat.addEventListener('click',()=>{category=category===cat.dataset.filter?'':cat.dataset.filter;filterCards();document.querySelectorAll('.cat').forEach(c=>c.style.outline=c.dataset.filter===category?'2px solid #124c40':'none');}));
+
+document.querySelectorAll('.cat').forEach(cat=>
+  cat.addEventListener('click',()=>{
+    category=category===cat.dataset.filter?'':cat.dataset.filter;
+    filterCards();
+
+    document.querySelectorAll('.cat').forEach(c=>
+      c.style.outline=c.dataset.filter===category?'2px solid #124c40':'none'
+    );
+  })
+);
 </script>
 </body></html>
