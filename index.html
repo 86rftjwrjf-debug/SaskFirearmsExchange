@@ -83,6 +83,7 @@ footer{background:#103e35;color:#eaf3ef;padding:28px 0}.foot{display:flex;justif
 </main>
 <footer><div class="wrap foot"><div><strong>SaskFirearmsExchange</strong><br><small>Saskatchewan classifieds concept</small></div><div id="signin">Prototype only — no accounts, messages, payments, or live listings.</div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 const SUPABASE_URL = 'https://tavlixkwaenuvmbqxosg.supabase.co';
 const SUPABASE_KEY = 'sb_publishable__TdFEmsWNDtXe3URfg96oA_UaV1gF98';
@@ -92,44 +93,125 @@ const supabase = window.supabase.createClient(
   SUPABASE_KEY
 );
 
-const cards=[...document.querySelectorAll('.listing')], query=document.getElementById('query'), region=document.getElementById('region'), empty=document.getElementById('empty'), count=document.getElementById('count');
+const cardsContainer = document.getElementById('cards');
+const query = document.getElementById('query');
+const region = document.getElementById('region');
+const empty = document.getElementById('empty');
+const count = document.getElementById('count');
 
-let category='';
+let listings = [];
+let category = '';
 
-function filterCards(){
-  const q=query.value.trim().toLowerCase(), r=region.value;
-  let shown=0;
+async function loadListings() {
+  count.textContent = 'Loading listings…';
 
-  cards.forEach(card=>{
-    const ok=(!q||card.dataset.name.includes(q))&&
-      (!r||card.dataset.region===r)&&
-      (!category||card.dataset.category===category);
+  const { data, error } = await supabase
+    .from('listings')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-    card.style.display=ok?'':'none';
-    if(ok)shown++;
-  });
+  if (error) {
+    console.error('Supabase error:', error);
+    count.textContent = 'Unable to load listings';
+    return;
+  }
 
-  empty.style.display=shown?'none':'block';
-  count.textContent=shown+' fictional sample card'+(shown===1?'':'s')+' shown';
+  listings = data || [];
+  displayListings();
 }
 
-document.getElementById('searchBtn').addEventListener('click',filterCards);
+function displayListings() {
+  const q = query.value.trim().toLowerCase();
+  const r = region.value;
 
-query.addEventListener('keydown',e=>{
-  if(e.key==='Enter')filterCards();
+  const filtered = listings.filter(listing => {
+    const title = (listing.title || '').toLowerCase();
+    const description = (listing.description || '').toLowerCase();
+
+    return (
+      (!q || title.includes(q) || description.includes(q)) &&
+      (!r || listing.region === r) &&
+      (!category || listing.category === category)
+    );
+  });
+
+  cardsContainer.innerHTML = '';
+
+  filtered.forEach(listing => {
+    const card = document.createElement('article');
+    card.className = 'listing';
+
+    card.innerHTML = `
+      <div class="photo">
+        <span class="tag">LISTING</span>
+      </div>
+
+      <div class="details">
+        <h3>${escapeHtml(listing.title || 'Untitled listing')}</h3>
+
+        <div class="price">
+          ${listing.price != null ? '$' + Number(listing.price).toLocaleString() : '$—'}
+        </div>
+
+        <div class="meta">
+          <span>${escapeHtml(listing.region || 'Saskatchewan')}</span>
+          <span>${escapeHtml(listing.category || 'Other')}</span>
+        </div>
+      </div>
+    `;
+
+    cardsContainer.appendChild(card);
+  });
+
+  empty.style.display = filtered.length ? 'none' : 'block';
+
+  count.textContent =
+    filtered.length +
+    ' listing' +
+    (filtered.length === 1 ? '' : 's') +
+    ' shown';
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+document.getElementById('searchBtn').addEventListener(
+  'click',
+  displayListings
+);
+
+query.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    displayListings();
+  }
 });
 
-region.addEventListener('change',filterCards);
+region.addEventListener('change', displayListings);
 
-document.querySelectorAll('.cat').forEach(cat=>
-  cat.addEventListener('click',()=>{
-    category=category===cat.dataset.filter?'':cat.dataset.filter;
-    filterCards();
+document.querySelectorAll('.cat').forEach(cat => {
+  cat.addEventListener('click', () => {
+    category =
+      category === cat.dataset.filter
+        ? ''
+        : cat.dataset.filter;
 
-    document.querySelectorAll('.cat').forEach(c=>
-      c.style.outline=c.dataset.filter===category?'2px solid #124c40':'none'
-    );
-  })
-);
+    document.querySelectorAll('.cat').forEach(c => {
+      c.style.outline =
+        c.dataset.filter === category
+          ? '2px solid #124c40'
+          : 'none';
+    });
+
+    displayListings();
+  });
+});
+
+loadListings();
 </script>
 </body></html>
